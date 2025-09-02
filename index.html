@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Frontend Mentor - Calculator (4 Themes)</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: hsl(222,26%,31%);
+      --keypad-bg: hsl(223,31%,20%);
+      --screen-bg: hsl(224,36%,15%);
+      --key-bg: hsl(0,0%,90%);
+      --key-shadow: hsl(28,16%,65%);
+      --accent-bg: hsl(6,63%,50%);
+      --accent-shadow: hsl(6,70%,34%);
+      --text-primary: white;
+      --text-dark: hsl(221,14%,31%);
+      --radius: 12px;
+      --pad: 28px;
+    }
+
+    /* Theme 2 */
+    .theme-2{ --bg:hsl(0,0%,90%); --keypad-bg:hsl(0,5%,81%); --screen-bg:hsl(0,0%,93%);
+      --key-bg:hsl(185,42%,37%); --key-shadow:hsl(185,58%,25%);
+      --accent-bg:hsl(25,98%,40%); --accent-shadow:hsl(25,99%,27%);
+      --text-primary:hsl(60,10%,19%); --text-dark:hsl(60,10%,19%);
+      --key-bg-neutral:hsl(0,0%,90%); --key-shadow-neutral:hsl(35,11%,61%);
+    }
+    /* Theme 3 */
+    .theme-3{ --bg:hsl(268,75%,9%); --keypad-bg:hsl(268,71%,12%); --screen-bg:hsl(268,71%,12%);
+      --key-bg:hsl(281,89%,26%); --key-shadow:hsl(285,91%,52%);
+      --accent-bg:hsl(176,100%,44%); --accent-shadow:hsl(177,92%,70%);
+      --text-primary:hsl(0,100%,100%); --text-dark:hsl(198,20%,13%);
+      --key-bg-neutral:hsl(268,47%,21%); --key-shadow-neutral:hsl(290,70%,36%);
+    }
+    /* Theme 4 (custom based on screenshot feel) */
+    .theme-4{ --bg:hsl(210,18%,25%); --keypad-bg:hsl(215,20%,20%); --screen-bg:hsl(218,22%,16%);
+      --key-bg:hsl(40,20%,92%); --key-shadow:hsl(220,20%,30%);
+      --accent-bg:hsl(200,60%,50%); --accent-shadow:hsl(200,60%,35%);
+      --text-primary:white; --text-dark:hsl(221,14%,31%);
+      --key-bg-neutral:hsl(0,0%,90%); --key-shadow-neutral:hsl(28,16%,65%);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0; background:var(--bg); font-family:'League Spartan',system-ui,Arial;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px; color:var(--text-primary);
+      transition:background .25s ease, color .25s ease;
+    }
+
+    .calculator{
+      width:min(420px,92vw); max-width:440px;
+    }
+
+    .top-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px}
+    .brand{font-size:24px; letter-spacing:1px}
+    .theme-switch{display:flex; align-items:center; gap:12px; font-size:12px}
+    .switch-track{background:var(--keypad-bg); padding:8px 12px; border-radius:20px; display:flex; gap:8px; align-items:center; position:relative}
+    .theme-numbers{position:absolute; top:-18px; left:0; width:100%; display:flex; justify-content:space-around; font-size:12px; letter-spacing:2px}
+    .theme-dot{width:18px;height:18px;border-radius:50%;background:var(--screen-bg); display:inline-block; cursor:pointer; position:relative}
+    .theme-dot input{opacity:0;position:absolute;inset:0;cursor:pointer}
+    .theme-dot input:checked + .dot-indicator{background:var(--accent-bg)}
+    .dot-indicator{width:100%;height:100%;border-radius:50%;transition:background .2s ease}
+
+    .screen{
+      background:var(--screen-bg); padding:28px; border-radius:12px; font-size:40px; text-align:right; display:flex; align-items:center; justify-content:flex-end; color:var(--text-primary); box-shadow: inset 0 -6px rgba(0,0,0,0.2);
+      min-height:86px; margin-bottom:18px;
+    }
+
+    .keypad{background:var(--keypad-bg); padding:24px; border-radius:12px; box-shadow: 0 8px rgba(0,0,0,0.18)}
+    .keys{display:grid; grid-template-columns: repeat(4,1fr); gap:18px}
+
+    button.key{
+      border:0; padding:18px; border-radius:10px; font-size:20px; font-weight:700; cursor:pointer; box-shadow: 0 6px var(--key-shadow); background:var(--key-bg);
+      color:var(--text-dark); transition:transform .08s ease;
+    }
+    button.key:active{transform:translateY(3px)}
+
+    button.key.operation{background:var(--key-bg-neutral, var(--key-bg)); box-shadow:0 6px var(--key-shadow-neutral, var(--key-shadow));}
+    button.key.accent{background:var(--accent-bg); color:var(--text-primary); box-shadow:0 6px var(--accent-shadow)}
+    button.key.double{grid-column:span 2}
+
+    /* responsive */
+    @media (max-width:420px){
+      .screen{font-size:32px; padding:20px; min-height:72px}
+      button.key{padding:14px;font-size:18px}
+    }
+
+    /* small helper for focus */
+    button.key:focus{outline:3px solid rgba(255,255,255,0.08)}
+
+    footer{margin-top:30px; font-size:12px; text-align:center; opacity:.7}
+  </style>
+</head>
+<body>
+  <div class="calculator" id="app">
+    <div class="top-row">
+      <div class="brand">calc</div>
+      <div class="theme-switch" aria-label="Theme selector">
+        <div style="font-size:12px;opacity:.8">THEME</div>
+        <div class="switch-track" role="radiogroup" aria-label="Choose theme">
+          <div class="theme-numbers"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+          <label class="theme-dot" title="Theme 1">
+            <input class="radio-hidden" name="theme" type="radio" value="1" checked>
+            <div class="dot-indicator"></div>
+          </label>
+          <label class="theme-dot" title="Theme 2">
+            <input class="radio-hidden" name="theme" type="radio" value="2">
+            <div class="dot-indicator"></div>
+          </label>
+          <label class="theme-dot" title="Theme 3">
+            <input class="radio-hidden" name="theme" type="radio" value="3">
+            <div class="dot-indicator"></div>
+          </label>
+          <label class="theme-dot" title="Theme 4">
+            <input class="radio-hidden" name="theme" type="radio" value="4">
+            <div class="dot-indicator"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen" aria-live="polite"><span class="num" id="display">0</span></div>
+
+    <div class="keypad">
+      <div class="keys">
+        <button class="key" data-value="7">7</button>
+        <button class="key" data-value="8">8</button>
+        <button class="key" data-value="9">9</button>
+        <button class="key operation" data-action="del">DEL</button>
+
+        <button class="key" data-value="4">4</button>
+        <button class="key" data-value="5">5</button>
+        <button class="key" data-value="6">6</button>
+        <button class="key operation" data-value="+">+</button>
+
+        <button class="key" data-value="1">1</button>
+        <button class="key" data-value="2">2</button>
+        <button class="key" data-value="3">3</button>
+        <button class="key operation" data-value="-">-</button>
+
+        <button class="key" data-value=".">.</button>
+        <button class="key" data-value="0">0</button>
+        <button class="key" data-value="/">/</button>
+        <button class="key" data-value="*">x</button>
+
+        <button class="key double operation" data-action="reset">RESET</button>
+        <button class="key double accent" data-action="equals">=</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+    Coded by <strong>PXL – Programming eXperience Lab</strong>.
+  </footer>
+
+  <script>
+    (function(){
+      const app = document.getElementById('app');
+      const display = document.getElementById('display');
+      const keys = document.querySelectorAll('button.key');
+      const themeRadios = document.querySelectorAll('input[name="theme"]');
+
+      // State
+      let expr = '';
+
+      // Load theme from localStorage or prefers-color-scheme
+      const saved = localStorage.getItem('fm-theme');
+      if(saved){
+        applyTheme(saved);
+        const radio = document.querySelector('input[name="theme"][value="'+saved+'"]');
+        if(radio) radio.checked = true;
+      } else {
+        if(window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches){
+          applyTheme('1');
+          document.querySelector('input[name="theme"][value="1"]').checked = true;
+        } else {
+          applyTheme('2');
+          document.querySelector('input[name="theme"][value="2"]').checked = true;
+        }
+      }
+
+      themeRadios.forEach(radio => radio.addEventListener('change', e =>{
+        applyTheme(e.target.value);
+        localStorage.setItem('fm-theme', e.target.value);
+      }));
+
+      function applyTheme(id){
+        document.documentElement.classList.remove('theme-2','theme-3','theme-4');
+        if(id==='2') document.documentElement.classList.add('theme-2');
+        if(id==='3') document.documentElement.classList.add('theme-3');
+        if(id==='4') document.documentElement.classList.add('theme-4');
+      }
+
+      function updateDisplay(val){
+        if(val==='') display.textContent = '0';
+        else display.textContent = formatExpression(val);
+      }
+
+      function formatExpression(s){
+        try{
+          const parts = s.split(/([+\-*/])/g);
+          return parts.map(p => {
+            if(/^[+\-*/]$/.test(p)) return ' ' + p + ' ';
+            if(p==='') return '';
+            if(p.includes('.')){
+              const [int, dec] = p.split('.');
+              return Number(int).toLocaleString() + '.' + dec;
+            }
+            return Number(p).toLocaleString();
+          }).join('');
+        }catch(e){return s}
+      }
+
+      keys.forEach(k => k.addEventListener('click', e =>{
+        const v = k.dataset.value;
+        const action = k.dataset.action;
+        if(action==='del'){
+          expr = expr.slice(0,-1);
+        } else if(action==='reset'){
+          expr = '';
+        } else if(action==='equals'){
+          calcResult();
+        } else if(v!==undefined){
+          if(/[+\-*/]/.test(v)){
+            if(expr==='' && v!=='-') return;
+            if(/[+\-*/]$/.test(expr)){
+              expr = expr.slice(0,-1) + v;
+            } else {
+              expr += v;
+            }
+          } else if(v==='.'){
+            const lastNum = expr.split(/[+\-*/]/).pop();
+            if(lastNum.includes('.')) return;
+            expr += v;
+          } else {
+            expr += v;
+          }
+        }
+        updateDisplay(expr);
+      }));
+
+      function calcResult(){
+        if(expr.trim()==='') return;
+        let safe = expr.replace(/x/g,'*').replace(/×/g,'*').replace(/÷/g,'/');
+        try{
+          if(!/^[0-9+\-*/.() ]+$/.test(safe)) throw new Error('Invalid chars');
+          if(/\.\./.test(safe)) throw new Error('Invalid');
+          const result = Function('return ('+safe+')')();
+          expr = String(result);
+          updateDisplay(expr);
+        }catch(err){
+          expr = '';
+          display.textContent = 'Error';
+          setTimeout(()=> updateDisplay(''),1200);
+        }
+      }
+
+      window.addEventListener('keydown', e =>{
+        if(e.key>=0 && e.key<='9') document.querySelector('button.key[data-value="'+e.key+'"]')?.click();
+        if(['+','-','/','*','.'].includes(e.key)) document.querySelector('button.key[data-value="'+e.key+'"]')?.click();
+        if(e.key==='Enter' || e.key==='=') { e.preventDefault(); document.querySelector('button.key[data-action="equals"]')?.click(); }
+        if(e.key==='Backspace') document.querySelector('button.key[data-action="del"]')?.click();
+        if(e.key.toLowerCase()==='r') document.querySelector('button.key[data-action="reset"]')?.click();
+      });
+
+      updateDisplay(expr);
+    })();
+  </script>
+</body>
+</html>
